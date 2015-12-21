@@ -29,18 +29,17 @@ public class SandPanel extends JPanel {
         //pre-create colours
         siteColours.put(SiteType.AIR, getRGB(0,0,0,0));
         siteColours.put(SiteType.SAND, getRGB(237,201,175,0));
-        siteColours.put(SiteType.WATER, getRGB(64,164,223,0));
+        //siteColours.put(SiteType.WATER, getRGB(64,164,223,0));
 	}
 	
     @Override
     protected void paintComponent(Graphics g) {
     	super.paintComponent(g);
     	Graphics2D gg = (Graphics2D) g;
+    	
     	//black background
-        int width = this.getWidth();
-        int height = this.getHeight();
-        gg.setColor(Color.black);
-        gg.fillRect(0, 0, width, height);
+        //gg.setColor(Color.white);
+        //gg.fillRect(0, 0, getWidth(), getHeight());
         
         BufferedImage img = gg.getDeviceConfiguration().createCompatibleImage(sim.getWidth(), sim.getHeight(), Transparency.OPAQUE);
         
@@ -49,11 +48,26 @@ public class SandPanel extends JPanel {
         		//flip the y axis between sim and screen
         		SiteType siteType = sim.getSite(x,sim.getHeight()-y);
         		int rgb = siteColours.get(siteType);
-        		img.setRGB(x, y, rgb);
+        		img.setRGB(x,y, rgb);
         	}
         }
         
-        gg.drawImage(img, 0,0, null);        
+        //work out what resolution to scale to
+        double frameRatio = ((double)getWidth())/((double)getHeight());
+        double simRatio = ((double)sim.getWidth())/((double)sim.getHeight());
+        if (frameRatio > simRatio) {
+        	//use height
+        	double scaleRatio = ((double) getHeight() / (double) sim.getHeight());
+        	int imgWidth = (int) (sim.getWidth() * scaleRatio);
+        	int imgHeight = getHeight();
+            gg.drawImage(img, 0,0, imgWidth,imgHeight, null);
+        } else {
+        	//use width
+        	double scaleRatio = ((double) getWidth() / (double) sim.getWidth());
+        	int imgWidth = getWidth();
+        	int imgHeight = (int) (sim.getHeight() * scaleRatio);
+            gg.drawImage(img, 0,0, imgWidth,imgHeight, null);
+        }
     }
     
     private int getRGB(int r, int g, int b, int a) {

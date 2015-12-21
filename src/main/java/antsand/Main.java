@@ -1,23 +1,87 @@
 package antsand;
 
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JToolBar;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Main {
-
+	
+	protected Sim sim;
+	protected JFrame frame;
+	protected boolean simRunning = true;
+	
+	private Logger log = LoggerFactory.getLogger(getClass());
+	
 	public static void main(String[] args) {
 		new Main().run();
 	}
 
-	private void run() {
-		
-		JFrame frame = new JFrame();
+	private void run() {		
+		frame = new JFrame();
 		frame.setSize(640, 480);
 		frame.setTitle("Ant Sand");		
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		Sim sim = new Sim(640,480);
+		sim = new Sim(640,480);
 		SandPanel panel = new SandPanel(sim);
-		frame.add(panel);
+		frame.add(panel, BorderLayout.CENTER);
+		
+		
+		//put a toolbar over the top		
+		JToolBar toolBar = new JToolBar();
+		frame.add(toolBar, BorderLayout.NORTH);
+		
+		//add some buttons to the toolbar
+		JButton buttonPlay = new JButton(">");
+		buttonPlay.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				simRunning = true;
+			}
+		});
+		//TODO write actionListener for buttonPlay
+		toolBar.add(buttonPlay);
+		JButton buttonPause = new JButton("||");
+		buttonPause.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				simRunning = false;
+			}
+		});
+		//TODO write actionListener for buttonPause
+		toolBar.add(buttonPause);
 		
 		frame.setVisible(true);
+		
+		simThread.start();
+		
+		log.info("Started");
 	}
+	
+	protected Thread simThread = new Thread() {
+
+		@Override
+		public void run() {
+			log.info("running...");
+			while (simRunning) {
+				log.info("updating...");
+				sim.update();
+				frame.repaint();
+				try {
+					sleep(10);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	};
+	
 }

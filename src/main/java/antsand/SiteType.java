@@ -3,6 +3,5 @@ package antsand;
 public enum SiteType {
 
 	AIR,
-	SAND,
-	WATER;
+	SAND;
 }
