@@ -16,6 +16,7 @@ public class AntSandMain {
 	protected Sim sim;
 	protected JFrame frame;
 	protected boolean simRunning = true;
+	protected SandPanel sandPanel = null;
 	
 	private Logger log = LoggerFactory.getLogger(getClass());
 	
@@ -30,8 +31,8 @@ public class AntSandMain {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		sim = new Sim(640,480);
-		SandPanel panel = new SandPanel(sim);
-		frame.add(panel, BorderLayout.CENTER);
+		sandPanel = new SandPanel(sim);
+		frame.add(sandPanel, BorderLayout.CENTER);
 		
 		
 		//put a toolbar over the top		
@@ -46,8 +47,8 @@ public class AntSandMain {
 				simRunning = true;
 			}
 		});
-		//TODO write actionListener for buttonPlay
 		toolBar.add(buttonPlay);
+		
 		JButton buttonPause = new JButton("||");
 		buttonPause.addActionListener(new ActionListener() {
 			@Override
@@ -55,8 +56,35 @@ public class AntSandMain {
 				simRunning = false;
 			}
 		});
-		//TODO write actionListener for buttonPause
 		toolBar.add(buttonPause);
+		
+		JButton tinyPen = new JButton("Pen 1");
+		tinyPen.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				sandPanel.setPenSize(1);
+			}
+		});
+		toolBar.add(tinyPen);
+		
+		JButton smallPen = new JButton("Pen 5");
+		smallPen.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				sandPanel.setPenSize(5);
+			}
+		});
+		toolBar.add(smallPen);
+
+		
+		JButton mediumPen = new JButton("Pen 25");
+		mediumPen.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				sandPanel.setPenSize(25);
+			}
+		});
+		toolBar.add(mediumPen);
 		
 		frame.setVisible(true);
 		
