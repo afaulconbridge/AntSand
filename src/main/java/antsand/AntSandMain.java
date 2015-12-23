@@ -11,7 +11,7 @@ import javax.swing.JToolBar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Main {
+public class AntSandMain {
 	
 	protected Sim sim;
 	protected JFrame frame;
@@ -20,7 +20,7 @@ public class Main {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	
 	public static void main(String[] args) {
-		new Main().run();
+		new AntSandMain().run();
 	}
 
 	private void run() {		
@@ -72,8 +72,13 @@ public class Main {
 			log.info("running...");
 			while (simRunning) {
 				log.info("updating...");
+				
+				long timeStart = System.nanoTime();
 				sim.update();
+				long timeUpdate = System.nanoTime();
 				frame.repaint();
+				long timeFrame = System.nanoTime();
+				log.info("Timing: sim "+(timeUpdate-timeStart)/1000+" : frame "+(timeFrame-timeUpdate)/1000);
 				try {
 					sleep(10);
 				} catch (InterruptedException e) {
