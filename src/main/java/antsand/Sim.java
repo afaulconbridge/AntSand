@@ -11,7 +11,7 @@ public class Sim {
 	private final int width;
 	private final int height;
 	
-	private Map<XY<Integer>, SiteType> map = new HashMap<>();
+	private Map<Integer, Map<Integer, SiteType>> map = new HashMap<>();
 	
 	private Logger log = LoggerFactory.getLogger(getClass());
 	
@@ -23,8 +23,9 @@ public class Sim {
 
         for (int x = 0; x < getWidth(); x++) {
         	for (int y = (3*getHeight())/4; y < getHeight(); y++) {
-        		XY<Integer> xy = new XY<>(x,y);
-        		map.put(xy, SiteType.SAND);
+        		if (!map.containsKey(x))
+        			map.put(x, new HashMap<>());
+        		map.get(x).put(y, SiteType.SAND);
         	}
         }
 	}
@@ -38,16 +39,17 @@ public class Sim {
 	}
 	
 	public SiteType getSite(int x, int y) {
-		XY<Integer> xy = new XY<>(x,y);
-		if (map.containsKey(xy)) {
-			return map.get(xy);
-		} else {
-			return SiteType.AIR;
-		} 
+		if (map.containsKey(x)) {
+			if (map.get(x).containsKey(y)) {
+				return map.get(x).get(y);
+			}
+		}
+		
+		return SiteType.AIR;		 
 	}
 	
 	public void update() {
-		Map<XY<Integer>, SiteType> nextMap = new HashMap<>();
+		Map<Integer, Map<Integer, SiteType>> nextMap = new HashMap<>();
 
 		//log.info("Update running");
 		
@@ -64,15 +66,17 @@ public class Sim {
 					}
 				} else if (siteType == SiteType.SAND) {
 					//sand will fall into air
-					if (getSite(x,y-1) == SiteType.AIR) {
+					//but will settle on bottom of sim
+					if (y > 0 && getSite(x,y-1) == SiteType.AIR) {
 						newSiteType = SiteType.AIR;	
 						//log.info("sand fallen");					
 					}
 				}
 				
 				if (newSiteType != SiteType.AIR) {
-	        		XY<Integer> xy = new XY<>(x,y);
-					nextMap.put(xy, newSiteType);
+	        		if (!nextMap.containsKey(x))
+	        			nextMap.put(x, new HashMap<>());
+	        		nextMap.get(x).put(y, newSiteType);
 				}
 			}
 		}
