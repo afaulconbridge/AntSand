@@ -70,15 +70,17 @@ public class AntSandMain {
 		@Override
 		public void run() {
 			log.info("running...");
-			while (simRunning) {
-				log.info("updating...");
-				
-				long timeStart = System.nanoTime();
-				sim.update();
-				long timeUpdate = System.nanoTime();
-				frame.repaint();
-				long timeFrame = System.nanoTime();
-				log.info("Timing: sim "+(timeUpdate-timeStart)/1000+" : frame "+(timeFrame-timeUpdate)/1000);
+			while (true) {
+				if (simRunning) {
+					log.info("updating...");
+					
+					long timeStart = System.nanoTime();
+					sim.update();
+					long timeUpdate = System.nanoTime();
+					frame.repaint();
+					long timeFrame = System.nanoTime();
+					log.info("Timing: sim "+(timeUpdate-timeStart)/1000+" : frame "+(timeFrame-timeUpdate)/1000);
+				}
 				try {
 					sleep(10);
 				} catch (InterruptedException e) {
