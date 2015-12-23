@@ -48,40 +48,51 @@ public class Sim {
 		return SiteType.AIR;		 
 	}
 	
-	public void update() {
+	public void setSite(int x, int y, SiteType siteType) {
+		synchronized(map) {
+			if (!map.containsKey(x)) {
+				map.put(x, new HashMap<>());
+			}
+			map.get(x).put(y, siteType);
+		}
+	}
+	
+	public synchronized void update() {
 		Map<Integer, Map<Integer, SiteType>> nextMap = new HashMap<>();
 
 		//log.info("Update running");
 		
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-				SiteType siteType = getSite(x,y);
-				SiteType newSiteType = siteType;
-				
-				if (siteType == SiteType.AIR) {
-					//air goes to sand if sand falls into it
-					if (getSite(x,y+1) == SiteType.SAND) {
-						newSiteType = SiteType.SAND;
-						//log.info("sand falling");
+		synchronized(map) {
+			for (int y = 0; y < height; y++) {
+				for (int x = 0; x < width; x++) {
+					SiteType siteType = getSite(x,y);
+					SiteType newSiteType = siteType;
+					
+					if (siteType == SiteType.AIR) {
+						//air goes to sand if sand falls into it
+						if (getSite(x,y+1) == SiteType.SAND) {
+							newSiteType = SiteType.SAND;
+							//log.info("sand falling");
+						}
+					} else if (siteType == SiteType.SAND) {
+						//sand will fall into air
+						//but will settle on bottom of sim
+						if (y > 0 && getSite(x,y-1) == SiteType.AIR) {
+							newSiteType = SiteType.AIR;	
+							//log.info("sand fallen");					
+						}
 					}
-				} else if (siteType == SiteType.SAND) {
-					//sand will fall into air
-					//but will settle on bottom of sim
-					if (y > 0 && getSite(x,y-1) == SiteType.AIR) {
-						newSiteType = SiteType.AIR;	
-						//log.info("sand fallen");					
+					
+					if (newSiteType != SiteType.AIR) {
+		        		if (!nextMap.containsKey(x))
+		        			nextMap.put(x, new HashMap<>());
+		        		nextMap.get(x).put(y, newSiteType);
 					}
-				}
-				
-				if (newSiteType != SiteType.AIR) {
-	        		if (!nextMap.containsKey(x))
-	        			nextMap.put(x, new HashMap<>());
-	        		nextMap.get(x).put(y, newSiteType);
 				}
 			}
+			
+			map = nextMap;
 		}
-		
-		map = nextMap;
 	}
 
 }
