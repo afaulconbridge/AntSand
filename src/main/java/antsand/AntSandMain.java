@@ -59,10 +59,10 @@ public class AntSandMain {
 		});
 		toolBar.add(buttonPause);
 		
-		String[] penStrings = {"Pen 1","Pen 5","Pen 25"};
-		JComboBox<String> penComboBox = new JComboBox<>(penStrings);
-		penComboBox.setSelectedIndex(0);
-		penComboBox.addActionListener(new ActionListener() {
+		String[] penSizeStrings = {"Pen 1","Pen 5","Pen 25"};
+		JComboBox<String> penSizeComboBox = new JComboBox<>(penSizeStrings);
+		penSizeComboBox.setSelectedIndex(0);
+		penSizeComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 		        @SuppressWarnings("unchecked")
 				JComboBox<String> cb = (JComboBox<String>)e.getSource();
@@ -71,7 +71,24 @@ public class AntSandMain {
 		        sandPanel.setPenSize(size);
 		    }
 		});
-		toolBar.add(penComboBox);
+		toolBar.add(penSizeComboBox);
+		
+		String[] penTypeStrings = {"Sand", "Air"};
+		JComboBox<String> penTypeComboBox = new JComboBox<>(penTypeStrings);
+		penTypeComboBox.setSelectedIndex(0);
+		penTypeComboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+		        @SuppressWarnings("unchecked")
+				JComboBox<String> cb = (JComboBox<String>)e.getSource();
+		        String pen = (String)cb.getSelectedItem();
+		        if (pen.equals("Sand")) {
+		        	sandPanel.setPenMaterial(SiteType.SAND);
+		        } else if (pen.equals("Air")) {
+		        	sandPanel.setPenMaterial(SiteType.AIR);
+		        }
+		    }
+		});
+		toolBar.add(penTypeComboBox);
 		
 		frame.setVisible(true);
 		

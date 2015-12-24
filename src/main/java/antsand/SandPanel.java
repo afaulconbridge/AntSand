@@ -30,6 +30,7 @@ public class SandPanel extends JPanel implements MouseInputListener {
 	protected boolean mouseDown = false;
 	
 	protected int penSize = 1;
+	protected SiteType penMaterial = SiteType.SAND;
 	
 	protected double scaleRatio = 1.0;
 	
@@ -39,8 +40,8 @@ public class SandPanel extends JPanel implements MouseInputListener {
 		super(true);
 		this.sim = sim;
 
-		//mark this as non-opaque
-        this.setOpaque(false);
+		//mark this as opaque
+        this.setOpaque(true);
         
         //enable listening
         this.addMouseMotionListener(this);
@@ -57,6 +58,14 @@ public class SandPanel extends JPanel implements MouseInputListener {
 
 	public void setPenSize(int penSize) {
 		this.penSize = penSize;
+	}
+
+	public SiteType getPenMaterial() {
+		return penMaterial;
+	}
+
+	public void setPenMaterial(SiteType penMaterial) {
+		this.penMaterial = penMaterial;
 	}
 
 	@Override
@@ -160,7 +169,7 @@ public class SandPanel extends JPanel implements MouseInputListener {
 				int dx = x-simX;
 				int dy = y-simY;
 				if (Math.sqrt((dx*dx)+(dy*dy)) <= penSize/2) {
-					sim.setSite(x,y, SiteType.SAND);
+					sim.setSite(x,y, getPenMaterial());
 				}
 			}
 		}
