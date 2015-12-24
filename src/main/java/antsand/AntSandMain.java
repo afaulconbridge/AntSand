@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JToolBar;
 
@@ -58,33 +59,19 @@ public class AntSandMain {
 		});
 		toolBar.add(buttonPause);
 		
-		JButton tinyPen = new JButton("Pen 1");
-		tinyPen.addActionListener(new ActionListener() {
-			@Override
+		String[] penStrings = {"Pen 1","Pen 5","Pen 25"};
+		JComboBox<String> penComboBox = new JComboBox<>(penStrings);
+		penComboBox.setSelectedIndex(0);
+		penComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				sandPanel.setPenSize(1);
-			}
+		        @SuppressWarnings("unchecked")
+				JComboBox<String> cb = (JComboBox<String>)e.getSource();
+		        String pen = (String)cb.getSelectedItem();
+		        int size = Integer.parseInt(pen.substring(4));
+		        sandPanel.setPenSize(size);
+		    }
 		});
-		toolBar.add(tinyPen);
-		
-		JButton smallPen = new JButton("Pen 5");
-		smallPen.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				sandPanel.setPenSize(5);
-			}
-		});
-		toolBar.add(smallPen);
-
-		
-		JButton mediumPen = new JButton("Pen 25");
-		mediumPen.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				sandPanel.setPenSize(25);
-			}
-		});
-		toolBar.add(mediumPen);
+		toolBar.add(penComboBox);
 		
 		frame.setVisible(true);
 		
