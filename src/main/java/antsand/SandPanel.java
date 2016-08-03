@@ -173,6 +173,7 @@ public class SandPanel extends JPanel implements MouseInputListener {
 				}
 			}
 		}
+		this.repaint();
 	}
 
 }
